@@ -1,5 +1,5 @@
 import ExemploModel from '../models/ExemploModel.js';
-import { xmlToObj, sendXml, objToXml } from '../utils/xmlHelper.js';
+import { xmlToObj, sendXml } from '../utils/xmlHelper.js';
 
 export const criar = async (req, res) => {
     try {
@@ -69,23 +69,23 @@ export const atualizar = async (req, res) => {
             return sendXml(res, 400, { error: 'Corpo da requisição vazio. Envie os dados!' });
         }
 
+        const body = xmlToObj(req.body);
         const exemplo = await ExemploModel.buscarPorId(parseInt(id));
 
         if (!exemplo) {
             return sendXml(res, 404, { error: 'Registro não encontrado para atualizar.' });
         }
 
-            const body = objToXml(req.body);
         if (body.nome !== undefined) exemplo.nome = body.nome;
         if (body.estado !== undefined) exemplo.estado = body.estado;
         if (body.preco !== undefined) exemplo.preco = parseFloat(body.preco);
 
         const data = await exemplo.atualizar();
 
-        return sendXml(res, 200, { message: `O registro "${data.nome}" foi atualizado com sucesso!`, data });
+     sendXml(res, 200, { message: `O registro "${data.nome}" foi atualizado com sucesso!`, data });
     } catch (error) {
         console.error('Erro ao atualizar:', error);
-        return sendXml(res, 500, { error: 'Erro ao atualizar registro.' });
+     sendXml(res, 500, { error: 'Erro ao atualizar registro.' });
     }
 };
 
